@@ -77,12 +77,22 @@
         if (query != Query)
             return;
 
+        List<Package> packages = new();
         if (Result != null)
         {
             OnResult?.Invoke(Result);
 
-            FoundPackages = Result.Packages;
+            packages = Result.Packages.ToList();
         }
+
+        var split = Query.Split(' ');
+        var ident = split.FirstOrDefault(x => !x.Contains(":") && x.Contains("."));
+        if (ident != null)
+        {
+            packages.Add(await Package.FetchAsync(ident, true));
+        }
+
+        FoundPackages = packages.ToArray();
 
         StateHasChanged();
     }

@@ -14,12 +14,12 @@
     }
     @if (FileSystem?.IsValid ?? false)
     {
-        var dirs = FileSystem.FindDirectory(Path);
+        var dirs = FileSystem.FindDirectory(Path).OrderBy(x => x);
         @foreach (var dir in dirs)
         {
             <FileTreeEntry FileSystem=@FileSystem Dir=@dir Path=@(Path + dir + "/") OnFileSelect=@OnFileSelect />
         }
-        var files = FileSystem.FindFile(Path, "*", false);
+        var files = FileSystem.FindFile(Path, "*", false).OrderBy(x => x);
         @foreach (var file in files)
         {
             <div onclick=@(() => Select(file))><i>@IconHelper.GetFileIcon(file)</i>@file</div>

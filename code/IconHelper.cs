@@ -11,7 +11,7 @@ public static class IconHelper
         {
             return "📋";
         }
-        else if ( filePath.EndsWith( ".png" ) || filePath.EndsWith( ".jpg" ) || filePath.EndsWith( ".vtex_c" ) )
+        else if ( filePath.EndsWith( ".png" ) || filePath.EndsWith( ".jpg" ) || filePath.EndsWith( ".svg" ) || filePath.EndsWith( ".vtex_c" ) )
         {
             return "🖼️";
         }
@@ -42,6 +42,10 @@ public static class IconHelper
         else if ( filePath.EndsWith( ".vmat_c" ) )
         {
             return "🌐";
+        }
+        else if ( filePath.EndsWith( ".vmdl_c" ) )
+        {
+            return "🧊";
         }
         else if ( filePath.EndsWith( ".vpcf_c" ) )
         {

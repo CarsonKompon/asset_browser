@@ -1,0 +1,25 @@
+ResourceInspector
+{
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    flex-direction: column;
+
+    > .path
+    {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        font-size: 12px;
+        font-style: italic;
+    }
+
+    label
+    {
+        flex-shrink: 0;
+        text-align: left;
+        white-space: pre;
+    }
+}

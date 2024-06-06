@@ -195,5 +195,32 @@ GamePage
             overflow-y: scroll;
             flex-shrink: 1;
         }
+
+        .downloading
+        {
+            flex-grow: 1;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 16px;
+
+            i
+            {
+                font-size: 72px;
+                animation: spin 2s linear infinite;
+            }
+        }
+    }
+}
+
+@keyframes spin
+{
+    0%
+    {
+        transform: rotate(0deg);
+    }
+    100%
+    {
+        transform: rotate(360deg);
     }
 }

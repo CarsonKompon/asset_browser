@@ -1,0 +1,82 @@
+@using Sandbox;
+@using Sandbox.UI;
+@implements IInspector
+@namespace Browser
+@attribute [StyleSheet]
+@attribute [CustomInspector("vsnd_c")]
+
+<root>
+    <label class="path">@Path</label>
+    <div class="controls">
+        @if (!(handle?.IsStopped ?? true))
+        {
+            <i onclick=@StopSound>pause</i>
+        }
+        else
+        {
+            <i onclick=@PlaySound>play_arrow</i>
+        }
+        <div class="control">
+            Volume:
+            <SliderControl Value:bind="@Volume" Min=@(0) Max=@(100f) Step=@(1f) />
+        </div>
+    </div>
+</root>
+
+@code
+{
+    public BaseFileSystem FileSystem { get; set; }
+    public string Path { get; set; }
+    public static float Volume { get; set; } = 50f;
+
+    float CurrentTime
+    {
+        get => handle?.ElapsedTime ?? 0;
+        set
+        {
+            if (handle == null) return;
+            @* handle.Seek(value); *@
+        }
+    }
+
+    SoundHandle handle;
+
+    protected override void OnAfterTreeRender(bool firstTime)
+    {
+        base.OnAfterTreeRender(firstTime);
+
+        if (firstTime)
+        {
+            PlaySound();
+        }
+    }
+
+    public override void Tick()
+    {
+        base.Tick();
+
+        if (handle is not null)
+        {
+            handle.Volume = Volume / 100f;
+        }
+    }
+
+    void PlaySound()
+    {
+        if (string.IsNullOrEmpty(Path)) return;
+        Sound.StopAll(0);
+
+        var sound = SoundFile.Load(Path);
+        handle = Sound.PlayFile(sound);
+        handle.Position = Scene.Camera.Transform.Position;
+        handle.Volume = Volume / 100f;
+    }
+
+    void StopSound()
+    {
+        handle?.Stop();
+    }
+
+
+    protected override int BuildHash() => System.HashCode.Combine(Path, handle?.IsPlaying, handle?.IsStopped);
+}

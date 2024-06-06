@@ -1,0 +1,50 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@implements IInspector
+@namespace Browser
+@attribute [StyleSheet]
+
+<root>
+</root>
+
+@code
+{
+    public BaseFileSystem FileSystem { get; set; }
+    public string Path { get; set; }
+
+    public string Text { get; set; }
+
+    protected override void OnAfterTreeRender(bool firstRender)
+    {
+        base.OnAfterTreeRender(firstRender);
+
+        if (firstRender)
+        {
+            LoadText();
+        }
+    }
+
+    async void LoadText()
+    {
+        if (string.IsNullOrEmpty(Path)) return;
+
+        if (FileSystem.FileSize(Path) > 10000)
+        {
+            Text = "File too large to display";
+            return;
+        }
+        else
+        {
+            Text = await FileSystem.ReadAllTextAsync(Path);
+            // Replace all tabs with 4 spaces
+        }
+        DeleteChildren(true);
+        var p = Add.Label(Text);
+        p.Style.Set("text-align: left;");
+
+        StateHasChanged();
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine(Path, Text);
+}

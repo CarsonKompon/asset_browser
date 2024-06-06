@@ -1,0 +1,88 @@
+ModelInspector
+{
+    width: 100%;
+    height: 100%;
+    pointer-events: all;
+
+    Image
+    {
+        width: 100%;
+        height: 100%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    > .path
+    {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        font-size: 12px;
+        font-style: italic;
+    }
+
+    > .settings
+    {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        font-size: 28px;
+        padding: 8px;
+        background-color: rgba(rgb(21, 21, 24), 0.8);
+        flex-direction: column;
+        gap: 4px;
+
+        > .header
+        {
+            flex-grow: 1;
+            justify-content: flex-end;
+            
+            .btn
+            {
+                font-size: 28px;
+            }
+        }
+
+        .setting
+        {
+            font-size: 16px;
+            align-items: center;
+            gap: 8px;
+
+            label
+            {
+                flex-grow: 1;
+            }
+
+            CustomDropDown
+            {
+                width: 200px;
+                background-color: rgba(rgb(53, 53, 53), 0.4);
+                flex-direction: row-reverse;
+                align-items: center;
+                padding: 4px;
+
+                label
+                {
+                    flex-grow: 1;
+                }
+            }
+
+            SwitchControl
+            {
+                width: auto;
+            }
+        }
+    }
+
+    > .settings-btn
+    {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        font-size: 28px;
+        padding: 8px;
+        background-color: rgba(rgb(21, 21, 24), 0.8);
+    }
+}

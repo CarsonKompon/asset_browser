@@ -1,5 +1,5 @@
 {
-  "__guid": "d589c49a-248c-42a8-8f98-54e006034042",
+  "__guid": "4d8192e0-c0f2-4336-b0ac-f92082426ad7",
   "GameObjects": [
     {
       "__guid": "bd0ea10c-1771-4970-84f8-64f720c9a03f",
@@ -21,8 +21,8 @@
           "IsMainCamera": true,
           "Orthographic": false,
           "OrthographicHeight": 1204,
-          "Priority": 1,
-          "RenderExcludeTags": "",
+          "Priority": 2,
+          "RenderExcludeTags": "previewcam",
           "RenderTags": "",
           "TargetEye": "None",
           "Viewport": "0,0,1,1",
@@ -460,7 +460,97 @@
         },
         {
           "__type": "Browser.MainPanel",
-          "__guid": "8d70d06e-184b-42f6-9f95-5a4380f0c055"
+          "__guid": "38f89f66-e13a-42c9-91f4-10d24cfb1aee"
+        }
+      ]
+    },
+    {
+      "__guid": "560bc8f8-6a3e-4096-999f-cb5409c8b368",
+      "Flags": 0,
+      "Name": "Preview Cam",
+      "Tags": "previewcam",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "Children": [
+        {
+          "__guid": "c39924ea-f0bb-486d-a921-560024a52b86",
+          "Flags": 0,
+          "Name": "Camera",
+          "Position": "-216.1142,0,100",
+          "Rotation": "0,0.2159501,0,0.9764045",
+          "Tags": "maincamera",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkInterpolation": true,
+          "Components": [
+            {
+              "__type": "Sandbox.CameraComponent",
+              "__guid": "f706804d-c5ba-41b2-a7cb-5c1003115a4f",
+              "BackgroundColor": "0,0,0,0",
+              "ClearFlags": "All",
+              "FieldOfView": 60,
+              "IsMainCamera": false,
+              "Orthographic": false,
+              "OrthographicHeight": 1204,
+              "Priority": 1,
+              "RenderExcludeTags": "",
+              "RenderTags": "previewcam",
+              "TargetEye": "None",
+              "Viewport": "0,0,1,1",
+              "ZFar": 10000,
+              "ZNear": 10
+            }
+          ]
+        },
+        {
+          "__guid": "47b01b43-614d-4b84-8bf2-38637afaa8de",
+          "Flags": 0,
+          "Name": "Model Preview",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkInterpolation": true,
+          "Components": [
+            {
+              "__type": "Sandbox.SkinnedModelRenderer",
+              "__guid": "18f20d1e-1b86-4ae4-b4ea-2ab0f94eb970",
+              "BodyGroups": 18446744073709551615,
+              "CreateBoneObjects": false,
+              "RenderType": "On",
+              "Tint": "1,1,1,1",
+              "UseAnimGraph": true
+            },
+            {
+              "__type": "Browser.ModelPreview",
+              "__guid": "4d2fd727-37b2-4dd6-822b-2a34737864bc",
+              "Camera": {
+                "_type": "component",
+                "component_id": "f706804d-c5ba-41b2-a7cb-5c1003115a4f",
+                "go": "c39924ea-f0bb-486d-a921-560024a52b86",
+                "component_type": "CameraComponent"
+              }
+            }
+          ]
+        },
+        {
+          "__guid": "4b4361b9-3b52-4a63-9bbb-2f18eff45882",
+          "Flags": 0,
+          "Name": "Sun",
+          "Tags": "light_directional,light",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkInterpolation": true,
+          "Components": [
+            {
+              "__type": "Sandbox.DirectionalLight",
+              "__guid": "e9f8e5b0-5915-43e3-a993-4a259f123760",
+              "FogMode": "Enabled",
+              "FogStrength": 1,
+              "LightColor": "0.91373,0.98039,1,1",
+              "Shadows": true,
+              "SkyColor": "0.05882,0.07451,0.08235,1"
+            }
+          ]
         }
       ]
     }
@@ -488,7 +578,7 @@
   },
   "Title": "minimal",
   "Description": "",
-  "LastSaved": "2024-06-05T22:01:00.6445349-04:00",
+  "LastSaved": "2024-06-06T14:47:40.0715005-04:00",
   "ResourceVersion": 1,
   "__references": [],
   "__version": 1

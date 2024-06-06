@@ -1,19 +1,24 @@
 @using Sandbox;
 @using Sandbox.UI;
+@using Sandbox.UI.Construct;
 @implements IInspector
 @namespace Browser
 @attribute [StyleSheet]
+@attribute [CustomInspector("sound_c")]
 
 <root>
-    <label>@Text</label>
+    <label class="path">@Path</label>
+    @Text
 </root>
+
 
 @code
 {
     public BaseFileSystem FileSystem { get; set; }
     public string Path { get; set; }
 
-    string Text { get; set; }
+    public string Text { get; set; }
+
 
     protected override void OnAfterTreeRender(bool firstRender)
     {
@@ -21,19 +26,17 @@
 
         if (firstRender)
         {
-            LoadText();
+            LoadResource();
         }
     }
 
-    async void LoadText()
+    async void LoadResource()
     {
-        if (FileSystem.FileSize(Path) > 10000)
-        {
-            Text = "File too large to display";
-            return;
-        }
-        Text = await FileSystem.ReadAllTextAsync(Path);
-        StateHasChanged();
+        if (string.IsNullOrEmpty(Path)) return;
+
+        var obj = Sandbox.ResourceLibrary.Get<GameResource>(Path);
+            
+        Text = Json.Serialize(obj);
     }
 
     protected override int BuildHash() => System.HashCode.Combine(Path, Text);

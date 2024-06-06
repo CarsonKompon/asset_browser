@@ -1,0 +1,38 @@
+SoundInspector
+{
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+
+    > .path
+    {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        font-size: 12px;
+        font-style: italic;
+    }
+
+    .controls
+    {
+        flex-direction: column;
+        align-items: center;
+        gap: 64px;
+
+        i
+        {
+            font-size: 164px;
+        }
+
+        .control
+        {
+            gap: 16px;
+        }
+
+        SliderControl
+        {
+            width: 300px;
+        }
+    }
+}
