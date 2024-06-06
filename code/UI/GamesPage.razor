@@ -1,0 +1,20 @@
+@using Sandbox;
+@using Sandbox.UI;
+@page "/games"
+@namespace Browser
+@attribute [StyleSheet]
+
+<root>
+    <PackageList Query="type:game" Take=@(49) ShowFilters=@(true) OnSelected=@OnPackageSelected></PackageList>
+</root>
+
+@code
+{
+
+    void OnPackageSelected(Package package)
+    {
+        GamePage.SetPackage(package);
+        MainPanel.NavigateTo("/game");
+    }
+
+}

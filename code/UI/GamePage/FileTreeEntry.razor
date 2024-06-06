@@ -1,0 +1,41 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@namespace Browser
+
+<root>
+    <div onclick=@OpenClose><i>@(open ? "📂" : "📁")</i>@Dir</div>
+    <FileTree class="@(open ? "" : "hidden")" FileSystem=@FileSystem Path=@Path OnFileSelect=@OnFileSelect />
+</root>
+
+@code
+{
+    public BaseFileSystem FileSystem { get; set; }
+    public string Dir { get; set; }
+    public string Path { get; set; }
+
+    public Action<string> OnFileSelect { get; set; }
+
+    public static List<FileTreeEntry> Entries = new List<FileTreeEntry>();
+
+    internal bool open = false;
+
+    void OpenClose()
+    {
+        open = !open;
+        StateHasChanged();
+    }
+
+    protected override void OnAfterTreeRender(bool firstTime)
+    {
+        if (firstTime)
+        {
+            Entries.Add(this);
+        }
+    }
+
+    public override void OnDeleted()
+    {
+        Entries.Remove(this);
+    }
+}

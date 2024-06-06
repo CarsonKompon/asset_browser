@@ -1,0 +1,29 @@
+@using Sandbox;
+@using Sandbox.UI;
+@namespace Browser
+@inherits PanelComponent
+
+<root>
+	<NavHostPanel @ref="Navigator" DefaultUrl="/games" class="navigator">
+		<ChildContent>
+			<NavBar />
+			<div id="MenuContent" slot="navigator-canvas"></div>
+		</ChildContent>
+	</NavHostPanel>
+</root>
+
+@code
+{
+	public static MainPanel Instance { get; private set; }
+	public NavHostPanel Navigator { get; set; }
+
+	protected override void OnStart()
+	{
+		Instance = this;
+	}
+
+	public static void NavigateTo(string url)
+	{
+		Instance?.Navigator?.Navigate(url);
+	}
+}

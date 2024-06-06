@@ -1,0 +1,51 @@
+﻿@using System;
+@using Sandbox.UI;
+@using Sandbox;
+@namespace Browser
+@attribute [StyleSheet]
+
+<root id="NavigationMenu">
+
+    <div class="left">
+        <div class="logo">
+            <div class="main">
+                asset<span class="highlight">.browser</span>
+            </div>
+            <div class="subtitle">by Carson Kompon</div>
+        </div>
+    </div>
+
+    <div class="center">
+        <a class="nav-button" href="/games"><i>sports_esports</i>games</a>
+        <a class="nav-button" href="/models"><i>view_in_ar</i>models</a>
+        <a class="nav-button" href="/materials"><i>image</i>materials</a>
+        <a class="nav-button" href="/maps"><i>map</i>maps</a>
+        <a class="nav-button" href="/sounds"><i>audio_file</i>sounds</a>
+    </div>
+
+
+    <div class="right">
+        @* <a tooltip="#menu.settings" href="/settings" class="nav-button nav-icon-only">
+        <i>settings</i>
+        </a> *@
+        <a tooltip="#Quit to Menu" class="nav-button nav-icon-only" @onclick=@( () => ConsoleSystem.Run( "quit" ) )>
+            <i>power_settings_new</i>
+        </a>
+    </div>
+
+
+
+</root>
+
+@code
+{
+    void OpenAvatarScene()
+    {
+        var options = new SceneLoadOptions();
+        options.ShowLoadingScreen = false;
+        options.SetScene("/scenes/avatar.scene");
+
+        Game.ActiveScene.Load(options);
+    }
+
+}

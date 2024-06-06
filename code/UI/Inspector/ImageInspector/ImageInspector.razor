@@ -1,0 +1,46 @@
+@using Sandbox;
+@using Sandbox.UI;
+@implements IInspector
+@namespace Browser
+@attribute [StyleSheet]
+@attribute [CustomInspector("png")]
+@attribute [CustomInspector("jpg")]
+@attribute [CustomInspector("jpeg")]
+@attribute [CustomInspector("gif")]
+@attribute [CustomInspector("bmp")]
+@attribute [CustomInspector("tga")]
+
+<root>
+    <label>@Path</label>
+    @if (texture is not null)
+    {
+        <Image Texture=@(texture) />
+    }
+</root>
+
+@code
+{
+    public BaseFileSystem FileSystem { get; set; }
+    public string Path { get; set; }
+
+    Texture texture;
+
+    protected override void OnAfterTreeRender(bool firstRender)
+    {
+        base.OnAfterTreeRender(firstRender);
+
+        if (texture is null)
+        {
+            LoadTexture();
+        }
+    }
+
+    async void LoadTexture()
+    {
+        texture = await Texture.LoadAsync(FileSystem, Path);
+        StateHasChanged();
+    }
+
+
+    protected override int BuildHash() => System.HashCode.Combine(Path);
+}

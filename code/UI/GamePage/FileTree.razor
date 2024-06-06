@@ -1,0 +1,60 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@namespace Browser
+@attribute [StyleSheet]
+
+<root>
+    @if (Root)
+    {
+        <div class="header">
+            <div class="btn" onclick=@ExpandAll>Expand All</div>
+            <div class="btn" onclick=@CollapseAll>Collapse All</div>
+        </div>
+    }
+    @if (FileSystem?.IsValid ?? false)
+    {
+        var dirs = FileSystem.FindDirectory(Path);
+        @foreach (var dir in dirs)
+        {
+            <FileTreeEntry FileSystem=@FileSystem Dir=@dir Path=@(Path + dir + "/") OnFileSelect=@OnFileSelect />
+        }
+        var files = FileSystem.FindFile(Path, "*", false);
+        @foreach (var file in files)
+        {
+            <div onclick=@(() => Select(file))><i>@IconHelper.GetFileIcon(file)</i>@file</div>
+        }
+    }
+</root>
+
+@code
+{
+    public BaseFileSystem FileSystem { get; set; }
+    public string Path { get; set; }
+    public bool Root { get; set; } = false;
+
+    public Action<string> OnFileSelect { get; set; }
+
+    void Select(string file)
+    {
+        OnFileSelect?.Invoke(Path + file);
+    }
+
+    void ExpandAll()
+    {
+        foreach (var entry in FileTreeEntry.Entries)
+        {
+            entry.open = true;
+            entry.StateHasChanged();
+        }
+    }
+
+    void CollapseAll()
+    {
+        foreach (var entry in FileTreeEntry.Entries)
+        {
+            entry.open = false;
+            entry.StateHasChanged();
+        }
+    }
+}

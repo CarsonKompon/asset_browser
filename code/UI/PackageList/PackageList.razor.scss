@@ -1,0 +1,23 @@
+.package-list
+{
+    pointer-events: all;
+    color: white;
+    flex-direction: column;
+
+    h1
+    {
+        width: 100%;
+        margin-top: 50px;
+        font-size: 40px;
+    }
+
+    > .content
+    {
+        overflow-y: scroll;
+        flex-shrink: 1;
+        flex-wrap: wrap;
+        flex-grow: 1;
+        gap: 10px;
+        justify-content: space-around;
+    }
+}

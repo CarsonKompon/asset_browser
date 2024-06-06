@@ -1,0 +1,199 @@
+GamePage
+{
+    padding: 32px;
+    flex-grow: 1;
+    gap: 32px;
+    pointer-events: all;
+    color: white;
+    font-family: Poppins;
+    font-size: 18px;
+
+    .game-info
+    {
+        background-color: rgba(black, 0.6);
+        width: 40%;
+        padding: 32px;
+        flex-direction: column;
+        gap: 16px;
+        overflow-x: hidden;
+        overflow-y: visible;
+        flex-shrink: 0;
+
+        > *
+        {
+            flex-shrink: 0;
+        }
+
+        .screenshots
+        {
+            overflow-x: scroll;
+            overflow-y: hidden;
+            height: 400px;
+            gap: 16px;
+            background-color: rgba(white, 0.02);
+            padding: 8px 16px;
+            align-items: center;
+            backdrop-filter: blur(2px);
+
+            .video
+            {
+                aspect-ratio: 1.666;
+                height: 100%;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                flex-shrink: 0;
+            }
+
+            img
+            {
+                aspect-ratio: 1.666;
+                height: 100%;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                flex-shrink: 0;
+            }
+
+            .no-screenshots
+            {
+                flex-grow: 1;
+                justify-content: center;
+                align-items: center;
+                font-style: italic;
+                font-weight: 200;
+                font-size: 20px;
+            }
+        }
+
+        .game-header
+        {
+            justify-content: space-between;
+
+            .game-name
+            {
+                gap: 16px;
+
+                > img
+                {
+                    width: 92px;
+                    height: 92px;
+                    border-radius: 16px;
+                    background-size: contain;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                }
+
+                > .info
+                {
+                    flex-direction: column;
+                    justify-content: center;
+                    
+                    h1
+                    {
+                        font-size: 32px;
+                        font-weight: 700;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                    }
+
+                    > .org
+                    {
+                        font-size: 20px;
+                        font-weight: 300;
+                        gap: 8px;
+                        align-items: center;
+
+                        img
+                        {
+                            width: 32px;
+                            height: 32px;
+                            border-radius: 8px;
+                            background-size: contain;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                        }
+
+                        label
+                        {
+                            opacity: 0.4;
+                        }
+
+                        &:hover
+                        {
+                            cursor: pointer;
+
+                            label
+                            {
+                                opacity: 1;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .game-stats
+            {
+                flex-direction: column;
+                justify-content: space-between;
+
+                .stat
+                {
+                    gap: 8px;
+                    justify-content: flex-end;
+                    align-items: center;
+
+                    i
+                    {
+                        font-size: 24px;
+                        margin-left: 0px;
+                    }
+
+                    label
+                    {
+                        justify-content: flex-end;
+                        text-align: right;
+                    }
+
+                    &:not(.likes)
+                    {
+                        label
+                        {
+                            min-width: 30px;
+                            justify-content: flex-start;
+                            text-align: left;
+                        }
+                    }
+                }
+            }
+        }
+    
+        .game-description
+        {
+            flex-direction: column;
+            gap: 16px;
+            opacity: 0.2;
+        }
+    }
+
+    .game-content
+    {
+        flex-grow: 1;
+        flex-direction: column;
+        gap: 32px;
+
+        Inspector
+        {
+            height: 65%;
+            flex-shrink: 0;
+        }
+
+        .root-file-tree
+        {
+            overflow-x: hidden;
+            overflow-y: scroll;
+            flex-shrink: 1;
+        }
+    }
+}

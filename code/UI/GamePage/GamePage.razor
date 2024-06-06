@@ -1,0 +1,130 @@
+@using Sandbox;
+@using Sandbox.UI;
+@page "/game"
+@namespace Browser
+@attribute [StyleSheet]
+
+<root>
+    <div class="game-info">
+        @if (GamePackage is not null)
+        {
+            <div class="screenshots">
+                @if (GamePackage.Screenshots.Count() == 0)
+                {
+                    <div class="no-screenshots">No Screenshots Available</div>
+                }
+                else
+                {
+                    @foreach (var screenshot in GamePackage.Screenshots)
+                    {
+                        @if (screenshot.IsVideo)
+                        {
+                            <div class="video" style="background-image: url('@screenshot.Url')"></div>
+                        }
+                    }
+                    @foreach (var screenshot in GamePackage.Screenshots)
+                    {
+                        @if (!screenshot.IsVideo)
+                        {
+                            <img src="@screenshot.Url" />
+                        }
+                    }
+                }
+            </div>
+            <div class="game-header">
+                <div class="game-name">
+                    <img src="@GamePackage.Thumb" />
+                    <div class="info">
+                        <h1>@GamePackage.Title</h1>
+                        <div class="org">
+                            @if (!string.IsNullOrEmpty(GamePackage.Org.Thumb))
+                            {
+                                <img src="@GamePackage.Org.Thumb" />
+                            }
+                            else
+                            {
+                                <i>person</i>
+                            }
+                            <label>@GamePackage.Org.Title</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-stats">
+                    <div class="stat">
+                        <i>play_arrow</i>
+                        <label>@GamePackage.Usage.Total.Users.KiloFormat()</label>
+                    </div>
+                    <div class="stat">
+                        <i>favorite</i>
+                        <label>@GamePackage.Favourited.KiloFormat()</label>
+                    </div>
+                    <div class="stat likes">
+                        <i>thumb_up</i>
+                        <label>@GamePackage.VotesUp.KiloFormat()</label>
+                        <i>thumb_down</i>
+                        <label>@GamePackage.VotesDown.KiloFormat()</label>
+                    </div>
+                </div>
+            </div>
+            <div class="game-description">
+                @(string.IsNullOrEmpty(GamePackage.Description) ? (string.IsNullOrEmpty(GamePackage.Summary) ? "This package has no description..." : GamePackage.Summary) : GamePackage.Description
+            </div>
+        }
+    </div>
+    <div class="game-content">
+        @if (downloading)
+        {
+            <label class="downloading">Downloading...</label>
+        }
+        else
+        {
+            <Inspector FileSystem=@Files File=@SelectedFile />
+            <FileTree class="root-file-tree" Root=@(true) FileSystem=@Files Path=@("") OnFileSelect=@OnFileSelect />
+        }
+    </div>
+</root>
+
+@code
+{
+    static Package GamePackage { get; set; }
+    static GamePage Instance { get; set; }
+
+    BaseFileSystem Files;
+
+    int state = 0;
+    bool downloading => state > 0;
+
+    string SelectedFile { get; set; }
+
+    protected override void OnAfterTreeRender(bool firstTime)
+    {
+        if (firstTime)
+        {
+            LoadPackage();
+            Instance = this;
+        }
+    }
+
+    void OnFileSelect(string filePath)
+    {
+        Log.Info("Selected file: " + filePath);
+        SelectedFile = filePath;
+    }
+
+    async void LoadPackage()
+    {
+        state = 1;
+        GamePackage = await Package.FetchAsync(GamePackage.FullIdent, false, true);
+        state++;
+        Files = await GamePackage.MountAsync(true);
+        state = 0;
+    }
+
+    public static void SetPackage(Package package)
+    {
+        GamePackage = package;
+        Instance?.LoadPackage();
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine(GamePackage?.FullIdent, state, SelectedFile);
+}

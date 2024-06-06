@@ -1,0 +1,71 @@
+@using Sandbox;
+@using Sandbox.UI;
+@namespace Browser
+@attribute [StyleSheet]
+
+<root>
+    <div class="container" @ref="Container"></div>
+</root>
+
+@code
+{
+    public BaseFileSystem FileSystem { get; set; }
+    public string File
+    {
+        get => _file;
+        set
+        {
+            var old = _file;
+            _file = value;
+            if (old != value)
+                Init();
+        }
+    }
+    string _file;
+
+    Panel Container { get; set; }
+
+    protected override void OnAfterTreeRender(bool firstRender)
+    {
+        base.OnAfterTreeRender(firstRender);
+
+        if (firstRender)
+        {
+            Init();
+        }
+    }
+
+    public void Init()
+    {
+        if (Container is null) return;
+        Container.DeleteChildren(true);
+        var panelTypes = TypeLibrary.GetTypesWithAttribute<CustomInspectorAttribute>();
+        Log.Info(panelTypes);
+        var type = GetTypeFromPath(File);
+        Log.Info(type);
+        var panelType = panelTypes.FirstOrDefault(x => x.Attribute.Type == type);
+        if (panelType.Type is not null)
+        {
+            var panel = TypeLibrary.Create<Panel>(panelType.Type.TargetType);
+            Container.AddChild(panel);
+            if (panel is IInspector inspector && FileSystem is not null)
+            {
+                inspector.FileSystem = FileSystem;
+                inspector.Path = File;
+            }
+        }
+        else
+        {
+            var defaultPanel = new TextInspector();
+            defaultPanel.FileSystem = FileSystem;
+            defaultPanel.Path = File;
+            Container.AddChild(defaultPanel);
+        }
+    }
+
+    string GetTypeFromPath(string path)
+    {
+        if (string.IsNullOrEmpty(path)) return "";
+        return path.Split('.').LastOrDefault();
+    }
+}
