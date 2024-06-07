@@ -92,7 +92,16 @@
 @code
 {
     public BaseFileSystem FileSystem { get; set; }
-    public string Path { get; set; }
+    public string Path
+    {
+        get => _path;
+        set
+        {
+            _path = value;
+            ModelPreview.Instance?.SetModel(Model.Load(value));
+        }
+    }
+    string _path = "";
 
     Texture texture = null;
 

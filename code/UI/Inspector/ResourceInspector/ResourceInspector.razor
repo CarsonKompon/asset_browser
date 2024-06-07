@@ -30,13 +30,11 @@
         }
     }
 
-    async void LoadResource()
+    void LoadResource()
     {
         if (string.IsNullOrEmpty(Path)) return;
 
-        var obj = Sandbox.ResourceLibrary.Get<GameResource>(Path);
-            
-        Text = Json.Serialize(obj);
+
     }
 
     protected override int BuildHash() => System.HashCode.Combine(Path, Text);

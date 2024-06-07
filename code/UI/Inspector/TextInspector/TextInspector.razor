@@ -13,6 +13,8 @@
     public BaseFileSystem FileSystem { get; set; }
     public string Path { get; set; }
 
+    public bool IsJson { get; set; }
+    public object JsonObject { get; set; }
     public string Text { get; set; }
 
     protected override void OnAfterTreeRender(bool firstRender)
@@ -37,8 +39,21 @@
         else
         {
             Text = await FileSystem.ReadAllTextAsync(Path);
-            // Replace all tabs with 4 spaces
         }
+
+        Log.Info(Text);
+
+        if (!Path.EndsWith(".scss"))
+        {
+            var jsonText = BinaryJson.TryGet(Text, out var obj);
+            if (!string.IsNullOrEmpty(jsonText))
+            {
+                Text = jsonText;
+                IsJson = true;
+                JsonObject = obj;
+            }
+        }
+
         DeleteChildren(true);
         var p = Add.Label(Text);
         p.Style.Set("text-align: left;");
