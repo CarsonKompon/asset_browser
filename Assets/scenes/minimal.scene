@@ -499,7 +499,7 @@
               "TargetEye": "None",
               "Viewport": "0,0,1,1",
               "ZFar": 10000,
-              "ZNear": 10
+              "ZNear": 0.1
             }
           ]
         },
@@ -578,7 +578,7 @@
   },
   "Title": "minimal",
   "Description": "",
-  "LastSaved": "2024-06-06T18:56:51.0827875-04:00",
+  "LastSaved": "2024-06-07T09:33:56.0433365-04:00",
   "ResourceVersion": 1,
   "__references": [],
   "__version": 1
