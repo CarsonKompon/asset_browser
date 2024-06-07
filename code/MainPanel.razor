@@ -17,6 +17,9 @@
 	public static MainPanel Instance { get; private set; }
 	public NavHostPanel Navigator { get; set; }
 
+	[Property] public CameraComponent MapCamera { get; set; }
+	[Property] public MapInstance MapInstance { get; set; }
+
 	protected override void OnStart()
 	{
 		Instance = this;

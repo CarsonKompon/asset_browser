@@ -1,0 +1,33 @@
+@using Sandbox;
+@using Sandbox.UI;
+@page "/maps"
+@namespace Browser
+@attribute [StyleSheet]
+
+<root>
+    <PackageList Query="type:map" Take=@(49) ShowFilters=@(true) OnSelected=@OnPackageSelected></PackageList>
+    @if (!string.IsNullOrEmpty(Ident))
+    {
+        <MapInspector Path=@Ident></MapInspector>
+    }
+</root>
+
+@code
+{
+
+    bool loadingModel = false;
+    public string Ident { get; set; }
+
+    void OnPackageSelected(Package package)
+    {
+        SelectPackage(package);
+    }
+
+    async void SelectPackage(Package package)
+    {
+        Ident = package.FullIdent;
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine(Ident);
+
+}

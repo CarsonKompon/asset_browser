@@ -1,0 +1,71 @@
+MapsPage
+{
+    padding: 32px;
+    font-family: Poppins;
+    color: white;
+    gap: 32px;
+
+    PackageList
+    {
+        overflow: hidden;
+    }
+
+    > .loading
+    {
+        flex-shrink: 0;
+        width: 80%;
+        background-color: rgba(black, 0.6);
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+        font-size: 24px;
+        flex-direction: column;
+        gap: 32px;
+
+        i
+        {
+            font-size: 64px;
+            animation: spin 2s linear infinite;
+        }
+    }
+
+    MapInspector
+    {
+        flex-shrink: 0;
+        width: 80%;
+        background-color: rgba(black, 0.6);
+        padding: 16px;
+
+        > .path
+        {
+            top: 16px;
+            left: 16px;
+        }
+
+        > .settings
+        {
+            top: 16px;
+            right: 16px;
+            bottom: 16px;
+            height: auto;
+        }
+
+        > .settings-btn
+        {
+            top: 16px;
+            right: 16px;
+        }
+    }
+}
+
+@keyframes spin
+{
+    0%
+    {
+        transform: rotate(0deg);
+    }
+    100%
+    {
+        transform: rotate(360deg);
+    }
+}

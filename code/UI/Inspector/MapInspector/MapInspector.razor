@@ -1,0 +1,206 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@implements IInspector
+@namespace Browser
+@attribute [StyleSheet]
+@attribute [CustomInspector("vpk")]
+
+<root>
+    <label class="path">@Path</label>
+    @if (!MainPanel.Instance?.MapInstance?.IsLoaded ?? false)
+    {
+        <div class="loading">Loading map...<i>refresh</i></div>
+    }
+    else if (texture is not null)
+    {
+        <Image Texture=@(texture) />
+    }
+    @* @if (isSettingsOpen)
+    {
+    <div class="settings">
+    <div class="header">
+    <i class="btn" onclick=@ToggleSettings>close</i>
+    </div>
+    <div class="setting">
+    <label>Constantly Rotate:</label>
+    <SwitchControl Value:bind="@ModelPreview.Instance.IsSpinning" />
+    </div>
+    </div>
+    }
+    else
+    {
+    <i class=" settings-btn" onclick=@ToggleSettings>settings</i>
+    } *@
+</root>
+
+@code
+{
+    public BaseFileSystem FileSystem { get; set; }
+    public string Path
+    {
+        get => _path;
+        set
+        {
+            _path = value;
+            LoadMap();
+        }
+    }
+    string _path = "";
+
+    Texture texture = null;
+
+    bool isSettingsOpen = false;
+
+    bool isDragging = false;
+    Vector2 lastMousePos = Vector2.Zero;
+
+    Vector2 WishVelocity = Vector2.Zero;
+    Dictionary<string, bool> buttonsPressed = new();
+
+    float Speed = 200f;
+
+    protected override void OnAfterTreeRender(bool firstRender)
+    {
+        base.OnAfterTreeRender(firstRender);
+
+        AcceptsFocus = true;
+
+        if (firstRender)
+        {
+            LoadMap();
+        }
+    }
+
+    public override void Tick()
+    {
+        BuildWishVelocity();
+
+        var pos = MainPanel.Instance.MapCamera.Transform.Position;
+        var rot = MainPanel.Instance.MapCamera.Transform.Rotation;
+        pos += rot.Forward * WishVelocity.y * Time.Delta * Speed;
+        pos += rot.Left * WishVelocity.x * Time.Delta * Speed;
+        MainPanel.Instance.MapCamera.Transform.Position = pos;
+
+        texture ??= Texture.CreateRenderTarget().WithSize(1280, 720).Create();
+        MainPanel.Instance.MapCamera.RenderToTexture(texture);
+    }
+
+    void LoadMap()
+    {
+        MainPanel.Instance.MapInstance.OnMapLoaded = () =>
+        {
+            var spawnPoints = Scene.GetAllComponents<SpawnPoint>();
+            var point = spawnPoints.OrderBy(x => Random.Shared.Float()).FirstOrDefault();
+            if (point != null)
+            {
+                MainPanel.Instance.MapCamera.Transform.Position = point.Transform.Position;
+                MainPanel.Instance.MapCamera.Transform.Rotation = point.Transform.Rotation;
+            }
+        };
+        MainPanel.Instance.MapInstance.MapName = Path;
+    }
+
+    public override void OnMouseWheel(Vector2 value)
+    {
+        if (value.y != 0)
+        {
+            Speed -= value.y * 50;
+        }
+        Speed = MathX.Clamp(Speed, 50, 50000);
+    }
+
+    public override void OnButtonEvent(ButtonEvent e)
+    {
+        base.OnButtonEvent(e);
+
+        buttonsPressed[e.Button] = e.Pressed;
+    }
+    protected override void OnMouseDown(MousePanelEvent e)
+    {
+        base.OnMouseDown(e);
+
+        isDragging = true;
+        lastMousePos = e.LocalPosition;
+
+        e.StopPropagation();
+    }
+
+    protected override void OnMouseMove(MousePanelEvent e)
+    {
+        base.OnMouseMove(e);
+
+        if (isDragging)
+        {
+            var delta = e.LocalPosition - lastMousePos;
+            var rot = MainPanel.Instance.MapCamera.Transform.Rotation.Angles();
+            rot.yaw -= delta.x;
+            rot.pitch += delta.y;
+            MainPanel.Instance.MapCamera.Transform.Rotation = rot;
+            lastMousePos = e.LocalPosition;
+        }
+
+        e.StopPropagation();
+    }
+
+    protected override void OnMouseUp(MousePanelEvent e)
+    {
+        base.OnMouseUp(e);
+
+        isDragging = false;
+
+        e.StopPropagation();
+    }
+
+    void ToggleSettings()
+    {
+        isSettingsOpen = !isSettingsOpen;
+    }
+
+    void BuildWishVelocity()
+    {
+        WishVelocity = Vector2.Zero;
+
+        if (buttonsPressed.TryGetValue("w", out var w) && w)
+        {
+            WishVelocity.y = 1;
+        }
+        if (buttonsPressed.TryGetValue("s", out var s) && s)
+        {
+            WishVelocity.y = -1;
+        }
+        if (buttonsPressed.TryGetValue("a", out var a) && a)
+        {
+            WishVelocity.x = 1;
+        }
+        if (buttonsPressed.TryGetValue("d", out var d) && d)
+        {
+            WishVelocity.x = -1;
+        }
+
+        Angles rotation = new Angles(0, 0, 0);
+        if (buttonsPressed.TryGetValue("right", out var rightarrow) && rightarrow)
+        {
+            rotation.yaw = -1;
+        }
+        if (buttonsPressed.TryGetValue("left", out var leftarrow) && leftarrow)
+        {
+            rotation.yaw = 1;
+        }
+        if (buttonsPressed.TryGetValue("up", out var uparrow) && uparrow)
+        {
+            rotation.pitch = -1;
+        }
+        if (buttonsPressed.TryGetValue("down", out var downarrow) && downarrow)
+        {
+            rotation.pitch = 1;
+        }
+
+        var rot = MainPanel.Instance.MapCamera.Transform.Rotation.Angles();
+        rot.yaw += rotation.yaw;
+        rot.pitch += rotation.pitch;
+        MainPanel.Instance.MapCamera.Transform.Rotation = rot;
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine(Path, isSettingsOpen, MainPanel.Instance?.MapInstance?.IsLoaded);
+}
