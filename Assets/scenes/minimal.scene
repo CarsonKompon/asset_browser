@@ -460,7 +460,7 @@
         },
         {
           "__type": "Browser.MainPanel",
-          "__guid": "38f89f66-e13a-42c9-91f4-10d24cfb1aee"
+          "__guid": "b4ed0b6b-803d-4134-bfe8-a3b43f4ba8e0"
         }
       ]
     },
@@ -578,7 +578,7 @@
   },
   "Title": "minimal",
   "Description": "",
-  "LastSaved": "2024-06-06T14:47:40.0715005-04:00",
+  "LastSaved": "2024-06-06T18:56:51.0827875-04:00",
   "ResourceVersion": 1,
   "__references": [],
   "__version": 1

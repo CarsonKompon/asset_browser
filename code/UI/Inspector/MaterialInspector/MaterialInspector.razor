@@ -1,0 +1,121 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@implements IInspector
+@namespace Browser
+@attribute [StyleSheet]
+@attribute [CustomInspector("vmat_c")]
+
+<root>
+    <label class="path">@Path</label>
+    @if (texture is not null)
+    {
+        <Image Texture=@(texture) />
+    }
+    @if (isSettingsOpen)
+    {
+        <div class="settings">
+            <div class="header">
+                <i class="btn" onclick=@ToggleSettings>close</i>
+            </div>
+            <div class="setting">
+                <label>Constantly Rotate:</label>
+                <SwitchControl Value:bind="@ModelPreview.Instance.IsSpinning" />
+            </div>
+            @* <div class="button">Select Model</div> *@
+        </div>
+    }
+    else
+    {
+        <i class=" settings-btn" onclick=@ToggleSettings>settings</i>
+    }
+</root>
+
+@code
+{
+    public BaseFileSystem FileSystem { get; set; }
+    public string Path { get; set; }
+
+    Texture texture = null;
+
+    bool isSettingsOpen = false;
+
+    public ModelInspectorValue InspectorValue { get; set; } = new();
+
+    bool isDragging = false;
+    Vector2 lastMousePos = Vector2.Zero;
+    string CurrentAnimation
+    {
+        get => _currentAnimation;
+        set
+        {
+            _currentAnimation = value;
+            Log.Info("Setting animation to " + value);
+            if (string.IsNullOrEmpty(value))
+            {
+                ModelPreview.Instance.Renderer.UseAnimGraph = true;
+            }
+            else
+            {
+                ModelPreview.Instance.Renderer.UseAnimGraph = false;
+                ModelPreview.Instance.Renderer.SceneModel.CurrentSequence.Name = value;
+                ModelPreview.Instance.Renderer.SceneModel.CurrentSequence.Time = 0;
+            }
+        }
+    }
+    string _currentAnimation = "";
+
+    protected override void OnAfterTreeRender(bool firstRender)
+    {
+        base.OnAfterTreeRender(firstRender);
+
+        if (firstRender)
+        {
+            ModelPreview.Instance.SetModel(null);
+            ModelPreview.Instance.Renderer.MaterialOverride = Material.Load(Path.Replace(".vmat_c", ".vmat"));
+        }
+    }
+
+    protected override void OnMouseDown(MousePanelEvent e)
+    {
+        base.OnMouseDown(e);
+
+        isDragging = true;
+        lastMousePos = e.LocalPosition;
+    }
+
+    protected override void OnMouseMove(MousePanelEvent e)
+    {
+        base.OnMouseMove(e);
+
+        if (isDragging)
+        {
+            var delta = e.LocalPosition - lastMousePos;
+            ModelPreview.Instance.Drag(new Angles(0, delta.x, 0));
+            lastMousePos = e.LocalPosition;
+        }
+    }
+
+    protected override void OnMouseUp(MousePanelEvent e)
+    {
+        base.OnMouseUp(e);
+
+        isDragging = false;
+    }
+
+    void ToggleSettings()
+    {
+        isSettingsOpen = !isSettingsOpen;
+    }
+
+    public override void Tick()
+    {
+        base.Tick();
+
+        texture ??= Texture.CreateRenderTarget().WithSize(1280, 720).Create();
+        ModelPreview.Instance.Camera.RenderToTexture(texture);
+    }
+
+
+    protected override int BuildHash() => System.HashCode.Combine(Path, isSettingsOpen);
+}

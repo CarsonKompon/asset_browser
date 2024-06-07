@@ -10,6 +10,7 @@
 @attribute [CustomInspector("bmp")]
 @attribute [CustomInspector("tga")]
 @attribute [CustomInspector("svg")]
+@attribute [CustomInspector("vtex_c")]
 
 <root>
     <label>@Path</label>
@@ -38,7 +39,8 @@
 
     async void LoadTexture()
     {
-        texture = await Texture.LoadAsync(FileSystem, Path);
+        var path = Path.Replace(".vtex_c", ".vtex");
+        texture = await Texture.LoadAsync(FileSystem, path);
         StateHasChanged();
     }
 

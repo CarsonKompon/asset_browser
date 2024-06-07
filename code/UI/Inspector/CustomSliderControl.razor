@@ -1,0 +1,89 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@namespace Browser
+@inherits BaseControl
+@attribute [StyleSheet]
+
+<root class="slidercontrol">
+
+    <label>@(Value.ToString(NumberFormat))</label>
+
+</root>
+
+@code
+{
+    public string NumberFormat { get; set; } = "0.###";
+    public float Step { get; set; } = 0.1f;
+
+    float _value;
+
+    public float Value
+    {
+        get => _value;
+
+        set
+        {
+            if (_value == value)
+                return;
+
+            @* _value = MathX.Clamp(_value, Min, Max); *@
+
+            _value = value;
+            StateHasChanged();
+        }
+    }
+
+    bool isDragging = false;
+    Vector2 lastMousePos = Vector2.Zero;
+
+    /// <summary>
+    /// If we move the mouse while we're being pressed then set the value
+    /// </summary>
+    protected override void OnMouseMove(MousePanelEvent e)
+    {
+        base.OnMouseMove(e);
+
+        if (e.MouseButton == MouseButtons.Left)
+        {
+            isDragging = true;
+            lastMousePos = e.LocalPosition;
+        }
+        if (!isDragging) return;
+
+        var delta = e.LocalPosition.x - lastMousePos.x;
+        Value += delta * Step;
+        lastMousePos = e.LocalPosition;
+
+        e.StopPropagation();
+    }
+
+    /// <summary>
+    /// On mouse press jump to that position
+    /// </summary>
+    protected override void OnMouseDown(MousePanelEvent e)
+    {
+        base.OnMouseDown(e);
+
+        if (e.MouseButton == MouseButtons.Right)
+        {
+            Value = 0;
+            e.StopPropagation();
+            return;
+        }
+
+        isDragging = true;
+        lastMousePos = e.LocalPosition;
+
+        e.StopPropagation();
+    }
+
+    protected override void OnMouseUp(MousePanelEvent e)
+    {
+        base.OnMouseUp(e);
+
+
+        Log.Info(e.Target.ToString());
+        isDragging = false;
+    }
+}

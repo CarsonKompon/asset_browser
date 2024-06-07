@@ -1,3 +1,4 @@
+@using System;
 @using Sandbox;
 @using Sandbox.UI;
 @implements IInspector
@@ -21,19 +22,6 @@
                 <label>Constantly Rotate:</label>
                 <SwitchControl Value:bind="@ModelPreview.Instance.IsSpinning" />
             </div>
-            @if (ModelPreview.Instance.Renderer.Model.AnimationCount > 0)
-            {
-                var animationOptions = new List<Option>();
-                for (int i = 0; i < ModelPreview.Instance.Renderer.Model.AnimationCount; i++)
-                {
-                    var anim = ModelPreview.Instance.Renderer.Model.GetAnimationName(i);
-                    animationOptions.Add(new Option(anim, anim));
-                }
-                <div class="setting">
-                    <label>Animation:</label>
-                    <CustomDropDown Value:bind=@CurrentAnimation Options=@animationOptions />
-                </div>
-            }
             @if (ModelPreview.Instance.Renderer.HasMaterialGroups)
             {
                 var materialGroupOptions = new List<Option>();
@@ -46,6 +34,52 @@
                     <label>Material Group:</label>
                     <CustomDropDown Value:bind=@ModelPreview.Instance.Renderer.MaterialGroup Options=@materialGroupOptions />
                 </div>
+            }
+            @if (ModelPreview.Instance.Renderer.Model.AnimationCount > 0)
+            {
+                var animationOptions = new List<Option>();
+                animationOptions.Add(new Option("None", ""));
+                for (int i = 0; i < ModelPreview.Instance.Renderer.Model.AnimationCount; i++)
+                {
+                    var anim = ModelPreview.Instance.Renderer.Model.GetAnimationName(i);
+                    animationOptions.Add(new Option(anim, anim));
+                }
+                <div class="setting">
+                    <label>Animation:</label>
+                    <CustomDropDown Value:bind=@CurrentAnimation Options=@animationOptions />
+                </div>
+            }
+            @if (ModelPreview.Instance.Renderer.UseAnimGraph)
+            {
+                var animgraph = ModelPreview.Instance.Renderer.Model.AnimGraph;
+                @for (int i = 0; i < animgraph.ParamCount; i++)
+                {
+                    var parameterType = animgraph.GetParameterType(i);
+                    var parameterName = animgraph.GetParameterName(i);
+                    @if (parameterType == typeof(float))
+                    {
+                        <div class="setting">
+                            <label>@(parameterName):</label>
+                            <CustomSliderControl Value:bind=@(InspectorValue[(parameterName, typeof(float))]) />
+                        </div>
+                    }
+                    else if (parameterType == typeof(bool))
+                    {
+                        var boolVal = animgraph.GetParameter<bool>(i);
+                        <div class="setting">
+                            <label>@(parameterName):</label>
+                            <SwitchControl Value:bind=@(InspectorValue[(parameterName, typeof(bool))]) />
+                        </div>
+                    }
+                    else if (parameterType == typeof(int))
+                    {
+                        <div class="setting">
+                            <label>@(parameterName):</label>
+                            <CustomSliderControl Value:bind=@(InspectorValue[(parameterName, typeof(int))]) Step=@(1) />
+                        </div>
+                    }
+
+                }
             }
         </div>
     }
@@ -64,6 +98,7 @@
 
     bool isSettingsOpen = false;
 
+    public ModelInspectorValue InspectorValue { get; set; } = new();
 
     bool isDragging = false;
     Vector2 lastMousePos = Vector2.Zero;

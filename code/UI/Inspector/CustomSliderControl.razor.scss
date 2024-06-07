@@ -1,0 +1,14 @@
+
+.slidercontrol
+{
+    min-width: 50px;
+    background-color: rgba(206, 206, 206, 0.123);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    label
+    {
+        pointer-events: none;
+    }
+}

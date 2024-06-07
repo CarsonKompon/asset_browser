@@ -33,6 +33,7 @@ public sealed class ModelPreview : Component
 	public void SetModel( Model model )
 	{
 		Renderer.Model = model;
+		Renderer.MaterialOverride = null;
 		var bounds = Renderer.Bounds;
 		var center = bounds.Center;
 		var distance = bounds.Size.Length * 1.5f;
