@@ -28,7 +28,7 @@
         @* <a tooltip="#menu.settings" href="/settings" class="nav-button nav-icon-only">
         <i>settings</i>
         </a> *@
-        <a tooltip="#Quit to Menu" class="nav-button nav-icon-only" @onclick=@( () => ConsoleSystem.Run( "quit" ) )>
+        <a tooltip="#Quit to Menu" class="nav-button nav-icon-only" @onclick=@( () => Game.Close() )>
             <i>power_settings_new</i>
         </a>
     </div>

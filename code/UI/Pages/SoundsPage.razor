@@ -1,0 +1,42 @@
+@using Sandbox;
+@using Sandbox.UI;
+@page "/sounds"
+@namespace Browser
+@attribute [StyleSheet]
+
+<root>
+    <PackageList Query="type:sound" Take=@(49) ShowFilters=@(true) OnSelected=@OnPackageSelected></PackageList>
+    @if (loadingModel)
+    {
+        <div class="loading">Loading Sound...<i>refresh</i></div>
+    }
+    else if (!string.IsNullOrEmpty(Path))
+    {
+        <SoundInspector FileSystem=@FileSystem Path=@Path></SoundInspector>
+    }
+</root>
+
+@code
+{
+
+    bool loadingModel = false;
+    BaseFileSystem FileSystem { get; set; }
+    public string Path { get; set; }
+
+    void OnPackageSelected(Package package)
+    {
+        SelectPackage(package);
+    }
+
+    async void SelectPackage(Package package)
+    {
+        loadingModel = true;
+        package = await Package.FetchAsync(package.FullIdent, false);
+        FileSystem = await package.MountAsync();
+        Path = package.GetMeta("PrimaryAsset", "");
+        loadingModel = false;
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine(Path, loadingModel);
+
+}
